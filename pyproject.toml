@@ -1,17 +1,9 @@
 [project]
-name = "pdoc-markdown"
+name = "pdoc-md"
 version = "0.1.0"
-description = "Add your description here"
+description = "Generate simple markdown API documentation using pdoc."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "pdoc>=15.0.4",
 ]
-
-[dependency-groups]
-dev = [
-    "bioshift",
-]
-
-[tool.uv.sources]
-bioshift = { path = "../bioshift" }
