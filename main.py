@@ -8,9 +8,10 @@ import pdoc.docstrings
 def main():
     mod_name = sys.argv[1]
     mod = importlib.import_module(mod_name)
-    doc = pdoc.doc.Module(mod)
+    mod_doc = pdoc.doc.Module(mod)
     # crawl_recursive(doc)
-    crawl(doc)
+    print(f"---\ntitle: {mod_doc.name}\n---\n")
+    crawl(mod_doc)
 
 
 def crawl(doc):
@@ -34,8 +35,11 @@ def crawl(doc):
 
 
 def render_markdown(doc, depth):
-    print(f"{"#" * (depth + 1)} {doc.name}")
+    if depth == 1:
+        print("\n---")
+
     if isinstance(doc, pdoc.doc.Function):
+        print(f"{"##" * depth} {doc.name}")
         print("```python")
 
         for decorator in doc.decorators:
@@ -44,6 +48,7 @@ def render_markdown(doc, depth):
         print(f"{doc.funcdef} {doc.name}{doc.signature}:")
         print("```")
     elif isinstance(doc, pdoc.doc.Class):
+        print(f"{"##" * depth} {doc.name}")
         print("```python")
 
         definition = f"class {doc.name}"
@@ -56,12 +61,19 @@ def render_markdown(doc, depth):
         print(definition)
         print("```")
     elif isinstance(doc, pdoc.doc.Variable):
-        ...
+        print(f"{"##" * depth} {doc.name}")
+        print("```python")
+
+        definition = f"{doc.name}{doc.annotation_str}"
+        default = doc.default_value_str
+        if default:
+            definition += f" = {default}"
+        print(definition)
+
+        print("```")
 
     formatted_docstring = pdoc.docstrings.google(doc.docstring)
     print(formatted_docstring)
-    print("\n---")
-
 
 def is_private(doc):
     name = doc.fullname.rsplit(".")[-1]
